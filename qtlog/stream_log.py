@@ -35,6 +35,9 @@ COLORS = {
 def get_stream_logger(name):
     ''' returns a configured custom logger '''
     log = logging.getLogger(name)
+    log.setLevel(logging.DEBUG)
+
+    # this prevent double logging in maya script editor - you can thank me later :)
     log.propagate = False
 
     # adding a stream handler to our logger
@@ -78,13 +81,12 @@ def get_stream_logger(name):
     for item in CUSTOM_LEVELS:
         level, name, method = item
 
-        # adding four steps of a custom levels
+        # adding four steps of a custom level for python logger
         logging.addLevelName(level, name)
         setattr(log, name, level)
         setattr(logging.getLoggerClass(), name, method)
         setattr(log, name.lower(), method)
 
-    log.setLevel(logging.DEBUG)
     return log
 
 
