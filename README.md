@@ -19,3 +19,18 @@ Custom Python Log with colored message display for Maya/Houdini
     log.done('test done')  # green
     log.hint('hint to the user')  # yellow
 ```
+
+#### Usage
+
+```python
+    # get loggers
+    log = get_stream_log('MyToolLog')
+    log_ext = get_stream_log('ExternalLog')
+
+    # create the log widget
+    self.loggers = QtUILogger(self, self.ui.log_layout, [log, log_ext])
+
+    # sent message are displayed in color on the ui widget and maya
+    log.hint('Message')
+
+```
