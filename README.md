@@ -21,6 +21,7 @@ Custom Python Log with colored message display for Maya/Houdini
 ```
 
 ![ScreenShot](https://github.com/MaxRocamora/QtLog/blob/images/example_tool.png)
+![ScreenShot](https://github.com/MaxRocamora/QtLog/blob/main/images/example_tool.png?raw=true)
 
 #### Usage
 
