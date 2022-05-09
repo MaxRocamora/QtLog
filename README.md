@@ -32,7 +32,7 @@ Custom Python Log with colored message display for Maya/Houdini
     # create the log widget
     self.loggers = QtUILogger(self, self.ui.log_layout, [log, log_ext])
 
-    # sent message are displayed in color on the ui widget and maya
+    # sent messages are displayed in color on the ui widget and maya
     log.hint('Message')
 
 ```
