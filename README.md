@@ -20,8 +20,7 @@ Custom Python Log with colored message display for Maya/Houdini
     log.hint('hint to the user')  # yellow
 ```
 
-![ScreenShot](https://github.com/MaxRocamora/QtLog/blob/images/example_tool.png)
-![ScreenShot](https://github.com/MaxRocamora/QtLog/blob/main/images/example_tool.png?raw=true)
+![Example APP ScreenShot](https://github.com/MaxRocamora/QtLog/blob/main/images/example_tool.png?raw=true)
 
 #### Usage
 
