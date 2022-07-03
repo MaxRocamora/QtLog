@@ -27,12 +27,12 @@ Custom Python Log with colored message display for Maya/Houdini/Nuke
 ```python
 
     # imports
-    from stream_log import get_stream_log
-    from qt_ui_logger import QtUILogger
+    from qtlog.stream_log import get_stream_logger
+    from qtlog.qt_ui_logger import QtUILogger
 
     # get loggers
-    log = get_stream_log('MyToolLog')
-    log_ext = get_stream_log('ExternalLog')
+    log = get_stream_logger('MyToolLog')
+    log_ext = get_stream_logger('ExternalLog')
 
     # create the log widget
     self.loggers = QtUILogger(parent=self, layout_widget=self.ui.log_layout, loggers=[log, log_ext])
