@@ -1,4 +1,4 @@
-'''Custom Streamlogger
+'''Custom StreamLogger
 Used for standard log in maya/hou/nuke qt tools
 
 # create a stream logger
@@ -15,7 +15,7 @@ import logging
 DONE_LEVEL = logging.INFO + 1  # long operations completed
 HINT_LEVEL = logging.INFO + 2  # suggestions to the user
 OK_LEVEL = logging.INFO + 3  # short operation completed
-PROCESS_LEVEL = logging.INFO + 4  # the beggining of a process that requires time
+PROCESS_LEVEL = logging.INFO + 4  # the beginning of a process that requires time
 FILE_LEVEL = logging.INFO + 5  # filepaths or filenames
 
 COLORS = {
