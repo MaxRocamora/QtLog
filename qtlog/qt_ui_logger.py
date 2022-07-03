@@ -17,7 +17,7 @@ import logging
 from PySide2.QtWidgets import QPlainTextEdit
 from PySide2.QtGui import QFont
 
-from a2log.stream_log import COLORS
+from qtlog.stream_log import COLORS
 
 
 class QtUILogger(logging.Handler):
