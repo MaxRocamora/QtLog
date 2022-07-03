@@ -1,5 +1,5 @@
 '''A QPlainTextEdit Widget linked to stream_loggers
-Write log messages color formated to the given ui
+Write log messages color formatted to the given ui
 
 # get loggers
 log = get_stream_log('MyToolLog')
@@ -24,10 +24,10 @@ class QtUILogger(logging.Handler):
 
     def __init__(self, parent: type, layout_widget: type, loggers: list):
         super().__init__()
-        '''_summary_
+        '''creates the log widget and parent the loggers to the layout widget provided
 
         Args:
-            parent (QtMainWindow): qt mainwindow
+            parent (QtMainWindow): qt MainWindow
             layout_widget (QtLayoutWidget): the layout container for the text widget
             loggers (list): list of stream_loggers
         '''
