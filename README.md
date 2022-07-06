@@ -41,3 +41,5 @@ Custom Python Log with colored message display for Maya/Houdini/Nuke
     log.hint('Message')
 
 ```
+#### Install
+pip install qt-log
