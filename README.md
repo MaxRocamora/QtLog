@@ -39,9 +39,21 @@ Custom Python Log with colored message display for Maya/Houdini/Nuke
     log = get_stream_logger('MyToolLog')
     log_ext = get_stream_logger('ExternalLog')
 
-    # create the log widget
-    self.loggers = QtUILogger(parent=self, layout_widget=self.ui.log_layout, loggers=[log, log_ext])
+    # inside your qt app, you need a qtLayout to place the logger output widget.
+    
+    class MyTool(QMainWindow):
+        def __init__(self, parent=get_maya_main_window()):
+            ...
 
+            # creating/storing loggers (self, QtLayout, loggers)
+            self.loggers = QtUILogger(parent=self, layout_widget=self.ui.log_layout, loggers=[log, log_ext])
+            self.ui.btn_ok.clicked.connect(self.show_messages)
+
+        def closeEvent(self, event):
+            # remove the widget from the loggers, call .close() on closeEvent()
+            self.loggers.close()
+            self.close()
+    
     # sent messages are displayed in color on the ui widget and maya
     log.hint('Message')
 
