@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# poetry text guide
+poetry_pipy_guide.txt
+
+# vscode workspace and file
+.vscode/
+*.code-workspace
