@@ -47,8 +47,7 @@ class QtUILogger(logging.Handler):
             log.addHandler(self)
 
         # set font, css, message format
-        font = QFont('nosuchfont')
-        font.setStyleHint(font.Monospace)
+        font = QFont('Courier New')
         self.widget.setFont(font)
         self.widget.setStyleSheet(
             """
