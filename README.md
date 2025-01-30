@@ -7,6 +7,7 @@
 Custom Python Log with colored message display for Maya/Houdini/Nuke
 
 *PySide2/Python3 - Maya +2022, Houdini +19, Nuke +13*
+*PySide6/Python3 - Maya +2025*
 
 #### Message Levels
 
