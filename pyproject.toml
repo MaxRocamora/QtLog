@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "qt-log"
+version = "1.1.0"
+description = "Qt Custom UI Log for Maya/Houdini"
+authors = ["Maximiliano Rocamora <maxirocamora@gmail.com>"]
+readme = "README.md"
+homepage = "https://github.com/MaxRocamora/QtLog"
+license = "MIT"
+classifiers = [
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.7,<3.14"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
