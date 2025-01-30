@@ -1,30 +1,28 @@
 # ----------------------------------------------------------------------------------------
 # Awesome Tool
-# Example Qt Maya Tool for showcase QtLog
+# PySide2 Example Qt Maya Tool for showcase QtLog
 #
-'''
-# Run in Maya (add qtlog to pythonpath first)
+"""# Run in Maya (add qtlog to pythonpath first).
 
 import example.main as qtlog_example
 qtlog_example.main()
 
-'''
+"""
 # ----------------------------------------------------------------------------------------
 import os
 
-from PySide2 import QtCore
-from PySide2 import QtUiTools
-from PySide2.QtWidgets import QMainWindow, QWidget
-from shiboken2 import wrapInstance
 import maya.cmds as cmds
 from maya import OpenMayaUI as omui
+from PySide2 import QtCore, QtUiTools
+from PySide2.QtWidgets import QMainWindow, QWidget
+from shiboken2 import wrapInstance
 
-from qtlog.stream_log import get_stream_logger
 from qtlog.qt_ui_logger import QtUILogger
+from qtlog.stream_log import get_stream_logger
 
 
 def get_maya_main_window():
-    ''' returns wrapped maya main window for qt app's'''
+    """Returns wrapped maya main window for qt app's."""
     main_window_ptr = omui.MQtUtil.mainWindow()
     return wrapInstance(int(main_window_ptr), QWidget)
 
@@ -39,8 +37,8 @@ QT_NAME = 'awesome_tool_window'
 
 
 class AwesomeTool(QMainWindow):
-
     def __init__(self, parent=get_maya_main_window()):
+        """Main window for the Awesome Tool."""
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)
         self.setObjectName(QT_NAME)
@@ -58,7 +56,7 @@ class AwesomeTool(QMainWindow):
         self.show()
 
     def show_messages(self):
-        # output messages
+        """Shows output messages."""
         log.ok(f'{APP_NAME} {APP_VERSION}')
         log.info('This is log.info')
         log.debug('This is log.debug')
@@ -72,10 +70,11 @@ class AwesomeTool(QMainWindow):
 
         log.warning()
 
-    def closeEvent(self, event):
-        # remove the widget from the loggers, call .close() on closeEvent()
+    def closeEvent(self, event):  # noqa: N802
+        """Overloads the closeEvent to remove the widget from the loggers before call close()."""
         self.loggers.close()
         self.close()
+
 
 # ----------------------------------------------------------------------------------------
 # MAIN
@@ -83,6 +82,7 @@ class AwesomeTool(QMainWindow):
 
 
 def load():
+    """Loads the AwesomeTool."""
     if cmds.window(QT_NAME, q=1, ex=1):
         cmds.deleteUI(QT_NAME)
     AwesomeTool()
