@@ -1,12 +1,11 @@
 [![PyPI version](https://badge.fury.io/py/qt-log.svg?style=flat-square&logo=appveyor)](https://badge.fury.io/py/qt-log)
 [![PyPI Supported Python Versions](https://img.shields.io/pypi/pyversions/qt-log.svg?style=flat-square&logo=appveyor)](https://pypi.python.org/pypi/qt-log/)
-[![GitHub version](https://badge.fury.io/gh/MaxRocamora%2FQtLog.svg?style=flat-square&logo=appveyor)](https://badge.fury.io/gh/MaxRocamora%2FQtLog)
 [![Message](https://img.shields.io/badge/qtlog-python-blue?style=flat-square&logo=appveyor)](https://github.com/MaxRocamora/QtLog)
 
 # QtLog
 Custom Python Log with colored message display for Maya/Houdini/Nuke
 
-*PySide2/Python3 - Maya +2022, Houdini +19, Nuke +13*  
+*PySide2/Python3 - Maya +2022, Houdini +19, Nuke +13*   
 *PySide6/Python3 - Maya +2025*
 
 #### Message Levels
