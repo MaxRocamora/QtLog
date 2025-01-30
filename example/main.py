@@ -17,8 +17,8 @@ from PySide2 import QtCore, QtUiTools
 from PySide2.QtWidgets import QMainWindow, QWidget
 from shiboken2 import wrapInstance
 
-from qtlog.qt_ui_logger import QtUILogger
-from qtlog.stream_log import get_stream_logger
+from qt_log.qt_ui_logger import QtUILogger
+from qt_log.stream_log import get_stream_logger
 
 
 def get_maya_main_window():

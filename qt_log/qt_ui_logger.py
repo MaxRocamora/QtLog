@@ -22,7 +22,7 @@ except ImportError:
     from PySide6.QtGui import QFont
     from PySide6.QtWidgets import QPlainTextEdit
 
-from qtlog.stream_log import COLORS
+from qt_log.stream_log import COLORS
 
 
 class QtUILogger(logging.Handler):
