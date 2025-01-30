@@ -1,4 +1,5 @@
-'''A QPlainTextEdit Widget linked to stream_loggers
+"""A QPlainTextEdit Widget linked to stream_loggers.
+
 Write log messages color formatted to the given ui
 
 # get loggers
@@ -10,27 +11,30 @@ self.loggers = QtUILogger(self, self.ui.log_layout, [log, log_ext])
 
 log.hint('Message')
 
-'''
+"""
 import contextlib
 import logging
 
-from PySide2.QtWidgets import QPlainTextEdit
-from PySide2.QtGui import QFont
+try:
+    from PySide2.QtGui import QFont
+    from PySide2.QtWidgets import QPlainTextEdit
+except ImportError:
+    from PySide6.QtGui import QFont
+    from PySide6.QtWidgets import QPlainTextEdit
 
 from qtlog.stream_log import COLORS
 
 
 class QtUILogger(logging.Handler):
-
     def __init__(self, parent: type, layout_widget: type, loggers: list):
-        super().__init__()
-        '''creates the log widget and parent the loggers to the layout widget provided
+        """Creates a log widget and parent the loggers to the layout widget provided.
 
         Args:
             parent (QtMainWindow): qt MainWindow
             layout_widget (QtLayoutWidget): the layout container for the text widget
             loggers (list): list of stream_loggers
-        '''
+        """
+        super().__init__()
 
         # create output display widget, attach it to the layout widget
         self.widget = QPlainTextEdit(parent)
@@ -46,27 +50,28 @@ class QtUILogger(logging.Handler):
         font = QFont('nosuchfont')
         font.setStyleHint(font.Monospace)
         self.widget.setFont(font)
-        self.widget.setStyleSheet('''
+        self.widget.setStyleSheet(
+            """
                 border: 3px solid rgb(80, 80, 80);
                 color: rgb(255, 255, 255);
                 background-color: rgb(20, 20, 20);
-                ''')
+                """
+        )
         self.widget.setReadOnly(True)
         self.setFormatter(logging.Formatter('%(levelname)-7s | %(message)s'))
 
     def close(self):
-        ''' removes all handlers from this widget '''
+        """Removes all handlers from this widget."""
         for logger in self.loggers:
             if logger is not None:
                 logger.removeHandler(self.widget)
 
-    def emit(self, record):
-        '''writes the message formatted, uses font
-        color based on error level number
+    def emit(self, record: logging.LogRecord):
+        """Writes the message formatted, uses font color based on error level number.
 
         Args:
-            record (logger record)
-        '''
+            record: (logger record)
+        """
         color = COLORS.get(record.levelno, 'white')
         msg = self.format(record)
         s = f"""<font color = "{color}" > {msg} </font>"""
@@ -74,5 +79,5 @@ class QtUILogger(logging.Handler):
             self.widget.appendHtml(s)
 
     def clear(self):
-        ''' clears widget text '''
+        """Clears widget text."""
         self.widget.clear()
