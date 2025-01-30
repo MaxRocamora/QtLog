@@ -1,4 +1,5 @@
-'''Custom StreamLogger
+"""Custom StreamLogger.
+
 Used for standard log in maya/hou/nuke qt tools
 
 # create a stream logger
@@ -7,7 +8,7 @@ log = get_stream_log('MyToolLog')
 # send messages
 log.hint('Message')
 
-'''
+"""
 import logging
 
 # Log Levels
@@ -33,7 +34,7 @@ COLORS = {
 
 
 def get_stream_logger(name):
-    ''' returns a configured custom logger '''
+    """Returns a configured custom logger."""
     log = logging.getLogger(name)
     log.setLevel(logging.DEBUG)
 
@@ -69,16 +70,15 @@ def get_stream_logger(name):
             log._log(FILE_LEVEL, message, args, **kwargs)
 
     # Custom Levels
-    CUSTOM_LEVELS = [
+    custom_levels_data = [
         (DONE_LEVEL, 'DONE', _done),
         (HINT_LEVEL, 'HINT', _hint),
         (OK_LEVEL, 'OK', _ok),
         (PROCESS_LEVEL, 'PROCESS', _process),
         (FILE_LEVEL, 'FILE', _file),
-
     ]
 
-    for item in CUSTOM_LEVELS:
+    for item in custom_levels_data:
         level, name, method = item
 
         # adding four steps of a custom level for python logger
