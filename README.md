@@ -29,34 +29,52 @@ Custom Python Log with colored message display for Maya/Houdini/Nuke
 
 #### Usage
 
-```python
+Import the logger and create a logger instance, you can create multiple loggers and output them into the same widget.
 
-    # imports
+```python
     from qtlog.stream_log import get_stream_logger
+
+    log = get_stream_logger('MyToolLog')
+    log_ext = get_stream_logger('SomeOtherExternalLog')
+```
+
+Import the QtUILogger widget and create an instance of the widget, passing the app, the layout widget and the loggers, a layout widget is required.
+
+```python
     from qtlog.qt_ui_logger import QtUILogger
 
-    # get loggers
-    log = get_stream_logger('MyToolLog')
-    log_ext = get_stream_logger('ExternalLog')
+    # inside your app
+    self.loggers = QtUILogger(parent=self, layout_widget=self.ui.log_layout, loggers=[log, log_ext])
+```
 
-    # inside your qt app, you need a qtLayout to place the logger output widget.
-    
-    class MyTool(QMainWindow):
-        def __init__(self, parent=get_maya_main_window()):
-            ...
+In you qt app, you can use the QtUILogger to display the log messages in a widget.
 
-            # creating/storing loggers (self, QtLayout, loggers)
-            self.loggers = QtUILogger(parent=self, layout_widget=self.ui.log_layout, loggers=[log, log_ext])
-            self.ui.btn_ok.clicked.connect(self.show_messages)
-
-        def closeEvent(self, event):
-            # remove the widget from the loggers, call .close() on closeEvent()
-            self.loggers.close()
-            self.close()
-    
-    # sent messages are displayed in color on the ui widget and maya
+```python
+    log.info('Message')
+    log.warning('Message')
+    log.error('Message')
+    log.critical('Message')
+    log.debug('Message')
+    log.ok('Message')
+    log.file('Message')
+    log.process('Message')
+    log.done('Message')
     log.hint('Message')
+```
+
+Lastly, when you close the app, remove the loggers from the widget by overriding the closeEvent() method.
+
+
+```python
+
+    def closeEvent(self, event):
+        """Remove the widget from the loggers, call .close() on closeEvent()."""
+        self.loggers.close()
+        self.close()
 
 ```
-#### Install
+
+See the full example tool in the examples folder.
+
+## Install
 pip install qt-log
