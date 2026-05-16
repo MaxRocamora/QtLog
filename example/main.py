@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------------------------
 # Awesome Tool
-# PySide2 Example Qt Maya Tool for showcase QtLog
+# PySide6 example Qt Maya tool for showcasing QtLog
 #
 """# Run in Maya (add qtlog to pythonpath first).
 
@@ -8,14 +8,15 @@ import example.main as qtlog_example
 qtlog_example.main()
 
 """
+
 # ----------------------------------------------------------------------------------------
 import os
 
 import maya.cmds as cmds
 from maya import OpenMayaUI as omui
-from PySide2 import QtCore, QtUiTools
-from PySide2.QtWidgets import QMainWindow, QWidget
-from shiboken2 import wrapInstance
+from PySide6 import QtCore, QtUiTools
+from PySide6.QtWidgets import QMainWindow, QWidget
+from shiboken6 import wrapInstance
 
 from qt_log.qt_ui_logger import QtUILogger
 from qt_log.stream_log import get_stream_logger
