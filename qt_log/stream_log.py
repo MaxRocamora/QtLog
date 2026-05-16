@@ -9,7 +9,11 @@ log = get_stream_log('MyToolLog')
 log.hint('Message')
 
 """
+
+from __future__ import annotations
+
 import logging
+from typing import Any
 
 # Log Levels
 
@@ -19,7 +23,7 @@ OK_LEVEL = logging.INFO + 3  # short operation completed
 PROCESS_LEVEL = logging.INFO + 4  # the beginning of a process that requires time
 FILE_LEVEL = logging.INFO + 5  # filepaths or filenames
 
-COLORS = {
+COLORS: dict[int, str] = {
     logging.DEBUG: 'yellow',
     logging.INFO: 'white',
     logging.WARNING: 'orange',
@@ -33,7 +37,7 @@ COLORS = {
 }
 
 
-def get_stream_logger(name):
+def get_stream_logger(name: str) -> logging.Logger:
     """Returns a configured custom logger."""
     log = logging.getLogger(name)
     log.setLevel(logging.DEBUG)
@@ -43,34 +47,37 @@ def get_stream_logger(name):
 
     # adding a stream handler to our logger
     stream_handler = logging.StreamHandler()
-    formatter = logging.Formatter(name + ' - %(levelname)-7s | %(message)s')
+    formatter = logging.Formatter(
+        name + ' - %(asctime)s | %(levelname)-7s | %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S',
+    )
     stream_handler.setFormatter(formatter)
     if len(log.handlers) == 0:
         log.addHandler(stream_handler)
 
     # calls
-    def _done(message, *args, **kwargs):
+    def _done(message: object, *args: Any, **kwargs: Any) -> None:
         if log.isEnabledFor(DONE_LEVEL):
             log._log(DONE_LEVEL, message, args, **kwargs)
 
-    def _hint(message, *args, **kwargs):
+    def _hint(message: object, *args: Any, **kwargs: Any) -> None:
         if log.isEnabledFor(HINT_LEVEL):
             log._log(HINT_LEVEL, message, args, **kwargs)
 
-    def _ok(message, *args, **kwargs):
+    def _ok(message: object, *args: Any, **kwargs: Any) -> None:
         if log.isEnabledFor(OK_LEVEL):
             log._log(OK_LEVEL, message, args, **kwargs)
 
-    def _process(message, *args, **kwargs):
+    def _process(message: object, *args: Any, **kwargs: Any) -> None:
         if log.isEnabledFor(PROCESS_LEVEL):
             log._log(PROCESS_LEVEL, message, args, **kwargs)
 
-    def _file(message, *args, **kwargs):
+    def _file(message: object, *args: Any, **kwargs: Any) -> None:
         if log.isEnabledFor(FILE_LEVEL):
             log._log(FILE_LEVEL, message, args, **kwargs)
 
     # Custom Levels
-    custom_levels_data = [
+    custom_levels_data: list[tuple[int, str, Any]] = [
         (DONE_LEVEL, 'DONE', _done),
         (HINT_LEVEL, 'HINT', _hint),
         (OK_LEVEL, 'OK', _ok),
