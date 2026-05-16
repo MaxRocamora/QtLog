@@ -12,21 +12,27 @@ self.loggers = QtUILogger(self, self.ui.log_layout, [log, log_ext])
 log.hint('Message')
 
 """
+
+from __future__ import annotations
+
 import contextlib
 import logging
+from collections.abc import Sequence
+from typing import Any
 
-try:
-    from PySide2.QtGui import QFont
-    from PySide2.QtWidgets import QPlainTextEdit
-except ImportError:
-    from PySide6.QtGui import QFont
-    from PySide6.QtWidgets import QPlainTextEdit
+from PySide6.QtGui import QFont
+from PySide6.QtWidgets import QPlainTextEdit, QWidget
 
 from qt_log.stream_log import COLORS
 
 
 class QtUILogger(logging.Handler):
-    def __init__(self, parent: type, layout_widget: type, loggers: list):
+    def __init__(
+        self,
+        parent: QWidget,
+        layout_widget: Any,
+        loggers: Sequence[logging.Logger],
+    ) -> None:
         """Creates a log widget and parent the loggers to the layout widget provided.
 
         Args:
@@ -41,7 +47,7 @@ class QtUILogger(logging.Handler):
         layout_widget.addWidget(self.widget)
 
         # add loggers handlers to the widget
-        self.loggers = []
+        self.loggers: list[logging.Logger] = []
         for log in loggers:
             self.loggers.append(log)
             log.addHandler(self)
@@ -59,13 +65,13 @@ class QtUILogger(logging.Handler):
         self.widget.setReadOnly(True)
         self.setFormatter(logging.Formatter('%(levelname)-7s | %(message)s'))
 
-    def close(self):
+    def close(self) -> None:
         """Removes all handlers from this widget."""
         for logger in self.loggers:
             if logger is not None:
                 logger.removeHandler(self.widget)
 
-    def emit(self, record: logging.LogRecord):
+    def emit(self, record: logging.LogRecord) -> None:
         """Writes the message formatted, uses font color based on error level number.
 
         Args:
@@ -77,6 +83,6 @@ class QtUILogger(logging.Handler):
         with contextlib.suppress(RuntimeError):
             self.widget.appendHtml(s)
 
-    def clear(self):
+    def clear(self) -> None:
         """Clears widget text."""
         self.widget.clear()
