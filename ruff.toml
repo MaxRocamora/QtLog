@@ -18,11 +18,10 @@ ignore = ["E402", "D100", "D202", "D101", "D104", "N813", "N999"]
 "__init__.py" = ["E402"]
 
 [lint.pydocstyle]
-convention = "google"  # Accepts: "google", "numpy", or "pep257".
+convention = "google"
 
 [format]
 # Enable reformatting of code snippets in docstrings.
 docstring-code-format = true
-docstring-code-line-length = 109
+docstring-code-line-length = 99
 quote-style = "single"
-# exclude = ["sequence.py", "shot.py"]
