@@ -5,10 +5,13 @@
 # 1.1.2 02/2025 - Fixed font monospace property on PySide6
 # 1.1.3 08/2025 - Fixed poetry python requirements
 # 1.2.0 05/2026 - replaced poetry with uv, type hints
+# 1.3.0 08/2026 - Fixed logger ownership, cleanup, and thread-safe Qt delivery
+#                 - Added escaped bounded batching with performance benchmarks
+#                 - Added package typing, integration tests, and a standalone example
 # ----------------------------------------------------------------------------------------
 
 VERSION_MAJOR: int = 1
-VERSION_MINOR: int = 2
+VERSION_MINOR: int = 3
 VERSION_PATCH: int = 0
 
 version: str = f'{VERSION_MAJOR}.{VERSION_MINOR}.{VERSION_PATCH}'

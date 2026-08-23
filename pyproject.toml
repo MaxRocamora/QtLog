@@ -1,6 +1,6 @@
 [project]
 name = "qt-log"
-version = "1.2.0"
+version = "1.3.0"
 description = "Qt Custom UI Log for Maya/Houdini"
 authors = [{ name = "Maximiliano Rocamora" }]
 readme = "README.md"
@@ -21,6 +21,9 @@ urls = { Homepage = "https://github.com/MaxRocamora/QtLog" }
 [build-system]
 requires = ["hatchling>=1.26.0"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = ["pyright>=1.1.405", "pyside6>=6.8", "pytest>=8.4.1"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["qt_log"]

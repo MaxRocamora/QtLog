@@ -16,6 +16,7 @@ ignore = ["E402", "D100", "D202", "D101", "D104", "N813", "N999"]
 [lint.per-file-ignores]
 # Ignore `E402` (import violations) in all `__init__.py` files.
 "__init__.py" = ["E402"]
+"tests/**" = ["D102", "D107"]
 
 [lint.pydocstyle]
 convention = "google"

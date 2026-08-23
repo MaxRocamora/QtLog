@@ -13,6 +13,7 @@ log.hint('Message')
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from typing import Any
 
 # Log Levels
@@ -36,6 +37,25 @@ COLORS: dict[int, str] = {
     FILE_LEVEL: '#aed6f1',  # SUPER LIGHT BLUE
 }
 
+CUSTOM_LEVELS: tuple[tuple[int, str], ...] = (
+    (DONE_LEVEL, 'DONE'),
+    (HINT_LEVEL, 'HINT'),
+    (OK_LEVEL, 'OK'),
+    (PROCESS_LEVEL, 'PROCESS'),
+    (FILE_LEVEL, 'FILE'),
+)
+
+for custom_level, custom_level_name in CUSTOM_LEVELS:
+    logging.addLevelName(custom_level, custom_level_name)
+
+
+def _custom_log_method(log: logging.Logger, level: int) -> Callable[..., None]:
+    def log_at_level(message: object, *args: Any, **kwargs: Any) -> None:
+        if log.isEnabledFor(level):
+            log._log(level, message, args, **kwargs)
+
+    return log_at_level
+
 
 def get_stream_logger(name: str) -> logging.Logger:
     """Returns a configured custom logger."""
@@ -45,60 +65,29 @@ def get_stream_logger(name: str) -> logging.Logger:
     # this prevent double logging in maya script editor - you can thank me later :)
     log.propagate = False
 
-    # adding a stream handler to our logger
-    stream_handler = logging.StreamHandler()
-    formatter = logging.Formatter(
-        name + ' - %(asctime)s | %(levelname)-7s | %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S',
+    stream_handler = next(
+        (handler for handler in log.handlers if getattr(handler, '_qt_log_owned', False)),
+        None,
     )
-    stream_handler.setFormatter(formatter)
-    if len(log.handlers) == 0:
+    if stream_handler is None:
+        stream_handler = logging.StreamHandler()
+        stream_handler._qt_log_owned = True  # type: ignore[attr-defined]
+        formatter = logging.Formatter(
+            name + ' - %(asctime)s | %(levelname)-7s | %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S',
+        )
+        stream_handler.setFormatter(formatter)
         log.addHandler(stream_handler)
 
-    # calls
-    def _done(message: object, *args: Any, **kwargs: Any) -> None:
-        if log.isEnabledFor(DONE_LEVEL):
-            log._log(DONE_LEVEL, message, args, **kwargs)
-
-    def _hint(message: object, *args: Any, **kwargs: Any) -> None:
-        if log.isEnabledFor(HINT_LEVEL):
-            log._log(HINT_LEVEL, message, args, **kwargs)
-
-    def _ok(message: object, *args: Any, **kwargs: Any) -> None:
-        if log.isEnabledFor(OK_LEVEL):
-            log._log(OK_LEVEL, message, args, **kwargs)
-
-    def _process(message: object, *args: Any, **kwargs: Any) -> None:
-        if log.isEnabledFor(PROCESS_LEVEL):
-            log._log(PROCESS_LEVEL, message, args, **kwargs)
-
-    def _file(message: object, *args: Any, **kwargs: Any) -> None:
-        if log.isEnabledFor(FILE_LEVEL):
-            log._log(FILE_LEVEL, message, args, **kwargs)
-
-    # Custom Levels
-    custom_levels_data: list[tuple[int, str, Any]] = [
-        (DONE_LEVEL, 'DONE', _done),
-        (HINT_LEVEL, 'HINT', _hint),
-        (OK_LEVEL, 'OK', _ok),
-        (PROCESS_LEVEL, 'PROCESS', _process),
-        (FILE_LEVEL, 'FILE', _file),
-    ]
-
-    for item in custom_levels_data:
-        level, name, method = item
-
-        # adding four steps of a custom level for python logger
-        logging.addLevelName(level, name)
-        setattr(log, name, level)
-        setattr(logging.getLoggerClass(), name, method)
-        setattr(log, name.lower(), method)
+    for level, level_name in CUSTOM_LEVELS:
+        setattr(log, level_name, level)
+        setattr(log, level_name.lower(), _custom_log_method(log, level))
 
     return log
 
 
 if __name__ == '__main__':
-    custom_log = get_stream_logger('my_log')
+    custom_log: Any = get_stream_logger('my_log')
     custom_log.info('test info')
     custom_log.warning('test warning')
     custom_log.error('test error')
