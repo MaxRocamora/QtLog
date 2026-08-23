@@ -7,11 +7,11 @@ import os
 import unittest
 from time import perf_counter
 from typing import cast
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
 
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication, QWidget
 
 
 class ExampleTests(unittest.TestCase):
@@ -22,12 +22,36 @@ class ExampleTests(unittest.TestCase):
         cls.application = cast(QApplication | None, QApplication.instance()) or QApplication([])
 
     def test_maya_example_import_and_parent_lookup_are_host_deferred(self) -> None:
-        maya_example = importlib.import_module('example.main')
+        maya_example = importlib.import_module('example.maya_tool')
         parent_parameter = inspect.signature(maya_example.AwesomeTool.__init__).parameters[
             'parent'
         ]
 
         self.assertIsNone(parent_parameter.default)
+
+    def test_maya_example_builds_ui_and_streams_500_messages(self) -> None:
+        maya_example = importlib.import_module('example.maya_tool')
+        parent = QWidget()
+        window = maya_example.AwesomeTool(parent=parent)
+        write_message = Mock()
+
+        self.assertEqual(window.btn_ok.text(), 'OK')
+        self.assertEqual(window.stream_button.text(), 'Stream messages')
+        self.assertEqual(window.btn_cancel.text(), 'CANCEL')
+
+        with patch.object(
+            maya_example.random,
+            'choice',
+            return_value=write_message,
+        ) as random_choice:
+            window.stream_button.click()
+
+        self.assertEqual(random_choice.call_count, 500)
+        self.assertEqual(write_message.call_count, 500)
+        write_message.assert_any_call('Stream message %03d/500', 1)
+        write_message.assert_any_call('Stream message %03d/500', 500)
+        window.close()
+        self.application.processEvents()
 
     def test_standalone_example_renders_and_detaches_on_close(self) -> None:
         standalone = importlib.import_module('example.standalone')

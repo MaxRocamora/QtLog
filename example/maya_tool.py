@@ -12,17 +12,24 @@ qtlog_example.load()
 """
 
 # ----------------------------------------------------------------------------------------
+import random
 from importlib import import_module
-from pathlib import Path
-from typing import Any, cast
+from typing import cast
 
-from PySide6 import QtCore, QtUiTools
+from PySide6 import QtCore
 from PySide6.QtGui import QCloseEvent
-from PySide6.QtWidgets import QMainWindow, QWidget
+from PySide6.QtWidgets import (
+    QHBoxLayout,
+    QMainWindow,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 from shiboken6 import wrapInstance
 
 from qt_log.qt_ui_logger import QtUILogger
 from qt_log.stream_log import get_stream_logger
+from qt_log.version import app_name, version
 
 
 def get_maya_main_window() -> QWidget | None:
@@ -38,8 +45,6 @@ def get_maya_main_window() -> QWidget | None:
 log = get_stream_logger('AwesomeLog')
 log_b = get_stream_logger('AnotherLog')
 
-APP_NAME = 'AwesomeTool'
-APP_VERSION = '1.0.0'
 QT_NAME = 'awesome_tool_window'
 
 
@@ -51,25 +56,34 @@ class AwesomeTool(QMainWindow):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose, True)
         self.setObjectName(QT_NAME)
-        ui_file = Path(__file__).with_name('main.ui')
-        loaded_ui = QtUiTools.QUiLoader().load(str(ui_file))
-        if loaded_ui is None:
-            raise RuntimeError(f'Could not load UI file: {ui_file}')
-        self.ui: Any = loaded_ui
-        self.setFixedSize(self.ui.maximumWidth(), self.ui.maximumHeight())
-        self.setCentralWidget(self.ui)
-        self.setWindowTitle(APP_NAME)
+        self.setFixedSize(473, 276)
+        self.setWindowTitle(app_name + ' ' + version)
+
+        central_widget = QWidget(self)
+        layout = QVBoxLayout(central_widget)
+        log_layout = QVBoxLayout()
+        button_layout = QHBoxLayout()
+        self.btn_ok = QPushButton('OK', central_widget)
+        self.stream_button = QPushButton('Stream messages', central_widget)
+        self.btn_cancel = QPushButton('CANCEL', central_widget)
+        button_layout.addWidget(self.btn_ok)
+        button_layout.addWidget(self.stream_button)
+        button_layout.addWidget(self.btn_cancel)
+        layout.addLayout(log_layout)
+        layout.addLayout(button_layout)
+        self.setCentralWidget(central_widget)
 
         # creating/storing loggers
-        self.loggers = QtUILogger(self, self.ui.log_layout, [log, log_b])
+        self.loggers = QtUILogger(self, log_layout, [log, log_b])
 
-        self.ui.btn_ok.clicked.connect(self.show_messages)
-        self.ui.btn_cancel.clicked.connect(self.close)
+        self.btn_ok.clicked.connect(self.show_messages)
+        self.stream_button.clicked.connect(self.stream_messages)
+        self.btn_cancel.clicked.connect(self.close)
         self.show()
 
     def show_messages(self) -> None:
         """Shows output messages."""
-        log.ok(f'{APP_NAME} {APP_VERSION}')
+        log.ok(f'{app_name} - {version} is running')
         log.info('This is log.info')
         log.debug('This is log.debug')
         log.warning('This is log.warning')
@@ -79,6 +93,23 @@ class AwesomeTool(QMainWindow):
         log.file('This is log.file')
         log.process('This is log.process')
         log.ok('This is log.ok')
+
+    def stream_messages(self) -> None:
+        """Write a burst of 500 randomly leveled messages."""
+        log_methods = (
+            log.debug,
+            log.info,
+            log.warning,
+            log.error,
+            log.critical,
+            log.done,
+            log.hint,
+            log.ok,
+            log.process,
+            log.file,
+        )
+        for index in range(1, 501):
+            random.choice(log_methods)('Stream message %03d/500', index)
 
     def closeEvent(self, event: QCloseEvent) -> None:  # noqa: N802
         """Detach the UI logger before closing the window."""
