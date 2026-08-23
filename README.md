@@ -92,8 +92,8 @@ Run the host-neutral PySide6 example from the repository root:
 uv run python -m example.standalone
 ```
 
-The Maya-hosted example remains in `example/main.py` and is loaded inside Maya with
-`example.main.load()`.
+The Maya-hosted example remains in `example/maya_tool.py` and is loaded inside Maya with
+`example.maya_tool.load()`.
 
 ## Install
 
