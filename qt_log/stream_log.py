@@ -12,6 +12,7 @@ log.hint('Message')
 
 from __future__ import annotations
 
+import importlib
 import logging
 from collections.abc import Callable
 from typing import Any
@@ -57,12 +58,40 @@ def _custom_log_method(log: logging.Logger, level: int) -> Callable[..., None]:
     return log_at_level
 
 
+class _UnrealLogHandler(logging.Handler):
+    def __init__(self, unreal_module: Any) -> None:
+        super().__init__()
+        self._unreal = unreal_module
+
+    def emit(self, record: logging.LogRecord) -> None:
+        try:
+            message = self.format(record)
+            if record.levelno >= logging.ERROR:
+                self._unreal.log_error(message)
+            elif record.levelno >= logging.WARNING:
+                self._unreal.log_warning(message)
+            else:
+                self._unreal.log(message)
+        except Exception:
+            self.handleError(record)
+
+
+def _create_stream_handler() -> logging.Handler:
+    try:
+        unreal = importlib.import_module('unreal')
+    except ModuleNotFoundError as exc:
+        if exc.name != 'unreal':
+            raise
+        return logging.StreamHandler()
+    return _UnrealLogHandler(unreal)
+
+
 def get_stream_logger(name: str) -> logging.Logger:
     """Returns a configured custom logger."""
     log = logging.getLogger(name)
     log.setLevel(logging.DEBUG)
 
-    # this prevent double logging in maya script editor - you can thank me later :)
+    # this prevent double logging in maya script editor
     log.propagate = False
 
     stream_handler = next(
@@ -70,7 +99,7 @@ def get_stream_logger(name: str) -> logging.Logger:
         None,
     )
     if stream_handler is None:
-        stream_handler = logging.StreamHandler()
+        stream_handler = _create_stream_handler()
         stream_handler._qt_log_owned = True  # type: ignore[attr-defined]
         formatter = logging.Formatter(
             name + ' - %(asctime)s | %(levelname)-7s | %(message)s',

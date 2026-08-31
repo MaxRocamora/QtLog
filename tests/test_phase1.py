@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import logging
+import sys
 import unittest
+from types import SimpleNamespace
 from typing import Any
+from unittest.mock import Mock, patch
 
 from qt_log.qt_ui_logger import QtUILogger
 from qt_log.stream_log import (
@@ -116,7 +119,7 @@ class StreamLoggerTests(unittest.TestCase):
             [('qtlog_test_b', 'from b')],
         )
 
-    def test_factory_preserves_foreign_handlers_and_adds_one_stream_handler(self) -> None:
+    def test_factory_preserves_foreign_handlers_and_adds_one_owned_handler(self) -> None:
         logger = logging.getLogger('qtlog_test_existing')
         foreign_handler = logging.NullHandler()
         logger.addHandler(foreign_handler)
@@ -132,7 +135,10 @@ class StreamLoggerTests(unittest.TestCase):
         self.assertIn(foreign_handler, logger.handlers)
         self.assertIn(owned_handler, logger.handlers)
         self.assertEqual(
-            sum(type(handler) is logging.StreamHandler for handler in logger.handlers),
+            sum(
+                bool(getattr(handler, '_qt_log_owned', False))
+                for handler in logger.handlers
+            ),
             1,
         )
         self.assertEqual(
@@ -140,6 +146,32 @@ class StreamLoggerTests(unittest.TestCase):
             'qtlog_test_existing - %(asctime)s | %(levelname)-7s | %(message)s',
         )
         self.assertEqual(owned_handler.formatter.datefmt, '%Y-%m-%d %H:%M:%S')
+
+    def test_factory_uses_standard_stream_handler_outside_unreal(self) -> None:
+        with patch.dict(sys.modules, {'unreal': None}):
+            logger = get_stream_logger('qtlog_test_a')
+
+        self.assertIs(type(logger.handlers[0]), logging.StreamHandler)
+
+    def test_factory_routes_levels_through_unreal_logging(self) -> None:
+        unreal = SimpleNamespace(
+            log=Mock(),
+            log_warning=Mock(),
+            log_error=Mock(),
+        )
+
+        with patch.dict(sys.modules, {'unreal': unreal}):
+            logger = get_stream_logger('qtlog_test_a')
+            logger.info('ready')
+            logger.warning('careful')
+            logger.error('failed')
+
+        self.assertIn('INFO', unreal.log.call_args.args[0])
+        self.assertIn('ready', unreal.log.call_args.args[0])
+        self.assertIn('WARNING', unreal.log_warning.call_args.args[0])
+        self.assertIn('careful', unreal.log_warning.call_args.args[0])
+        self.assertIn('ERROR', unreal.log_error.call_args.args[0])
+        self.assertIn('failed', unreal.log_error.call_args.args[0])
 
     def test_factory_does_not_mutate_the_global_logger_class(self) -> None:
         get_stream_logger('qtlog_test_a')

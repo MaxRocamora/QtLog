@@ -74,6 +74,10 @@ the widget changes when the Qt event loop processes pending events. Pending disp
 bounded at 4,096; under sustained overload, the oldest pending record is discarded. Use
 `self.loggers.dropped_records` and `self.loggers.peak_pending_records` to monitor overload.
 
+When running in Unreal Engine, stream messages are routed through Unreal's native logging API so
+info, warning, and error records retain their correct Output Log severity. Other hosts continue to
+use Python's standard `logging.StreamHandler`.
+
 Lastly, when you close the app, remove the handler from its loggers by overriding `closeEvent()`.
 Call the base implementation rather than recursively closing the window.
 

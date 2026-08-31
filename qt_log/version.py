@@ -8,11 +8,12 @@
 # 1.3.0 08/2026 - Fixed logger ownership, cleanup, and thread-safe Qt delivery
 #                 - Added escaped bounded batching with performance benchmarks
 #                 - Added package typing, integration tests, and a standalone example
+# 1.3.1 08/2026 - Added Unreal StreamLog support
 # ----------------------------------------------------------------------------------------
 
 VERSION_MAJOR: int = 1
 VERSION_MINOR: int = 3
-VERSION_PATCH: int = 0
+VERSION_PATCH: int = 1
 
 version: str = f'{VERSION_MAJOR}.{VERSION_MINOR}.{VERSION_PATCH}'
 
